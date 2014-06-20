@@ -14,11 +14,35 @@
                         (do
                           (action)
                           (recur state-name)))
-                    (recur state-name)))))))
+                      (recur state-name)))))))
 
-(inputomata {:start {:msg "Press q to quit "
-                     \q :end
-                     \m :msg}
-             :msg {:msg "M mode activated (Press q to quit) "
-                   \q :end}})
+(let [r (atom 0)
+      g (atom 0)
+      b (atom 0)]
+  (inputomata {:start {:msg "Choose component (r/g/b/q): "
+                       \r :red
+                       \g :green
+                       \b :blue
+                       \q nil}
+               :red {:msg "Set the RED component value (j/k/r/g/b/m/q): "
+                     \m :start
+                     \g :green
+                     \b :blue
+                     \j #(swap! r inc)
+                     \k #(swap! r dec)
+                     \q nil}
+               :green {:msg "Set the GREEN component value (j/k/r/g/b/m/q): "
+                       \m :start
+                       \r :red
+                       \b :blue
+                       \j #(swap! g inc)
+                       \k #(swap! g dec)
+                       \q nil}
+               :blue {:msg "Set the BLUE component value (j/k/r/g/b/m/q): "
+                      \m :start
+                      \r :red
+                      \g :green
+                      \j #(swap! b inc)
+                      \k #(swap! b dec)
+                      \q nil}}))
 
