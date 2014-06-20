@@ -1,20 +1,21 @@
 (defn inputomata [states-map]
   (loop [state-name :start]
+        (if (not (contains? states-map state-name))
+          (throw (str "no state :" state-name)))
         (let [state-map (states-map state-name)]
           (when-let [msg (:msg state-map)]
                     (echo msg))
           (let [state-key (nr2char (#*getchar))]
-            (if-let [action (state-map state-key)]
-                    (if (keyword? action)
-                      (if (states-map action)
-                        (recur action)
-                        "Terminated abnormally.")
-                      (if (nil? action)
-                        "Terminated normally."
-                        (do
-                          (action)
-                          (recur state-name)))
-                      (recur state-name)))))))
+            (if (contains? state-map state-key)
+              (let [action (state-map state-key)]
+                (if action
+                  (if (keyword? action)
+                    (recur action)
+                    (do
+                      (action)
+                      (recur state-name)))
+                  "Terminated normally."))
+              (recur (state-map state-key)))))))
 
 (let [r (atom 0)
       g (atom 0)
