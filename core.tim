@@ -1,0 +1,21 @@
+(defn inputomata [state-map]
+  (let [default-states {:start {:msg "Press q to quit"
+                                \q :end}
+                        :end nil}
+        states (merge default-states state-map)]
+    (loop [state-name :start]
+          (let [state (states state-name)]
+            (when-let [msg (:msg state)]
+                      (echo msg))
+            (if-let [new-state-name (state (nr2char (#*getchar)))]
+                    (cond
+                      (= new-state-name :end) "Successful termination."
+                      :else (recur new-state-name))
+                    (recur state-name))))))
+
+(inputomata {:start {:msg "Press q to quit "
+                     \q :end
+                     \m :msg}
+             :msg {:msg "M mode activated (Press q to quit) "
+                   \q :end}})
+
