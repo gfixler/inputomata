@@ -16,16 +16,18 @@
       clamp #(max (min % 5) 0)
       cinc #(clamp (inc %))
       cdec #(clamp (dec %))
-      cout #(str "r" @r " g" @g " b" @b " ("
-                 (cterm-rgb @r @g @b)
-                 ") [j/k/f/r/g/b/m/q] " % " ("
-                 (if @f "fg" "bg") "): ")]
+      cout #(str "(j/k/f/r/g/b/m/q) ("
+                 (if @f "fg" "bg") ") "
+                 (if (= % \r) "R" "r") @r
+                 (if (= % \g) " G" " g") @g
+                 (if (= % \b) " B" " b") @b
+                 " (" (cterm-rgb @r @g @b) "): ")]
   (inputomata {:start {:msg "Choose component [r/g/b/q]: "
                        \r :red
                        \g :green
                        \b :blue
                        \q nil}
-               :red {:msg #(cout "RED")
+               :red {:msg #(cout \r)
                      \m :start
                      \g :green
                      \b :blue
@@ -33,7 +35,7 @@
                      \j #(swap! r cdec)
                      \k #(swap! r cinc)
                      \q nil}
-               :green {:msg #(cout "GREEN")
+               :green {:msg #(cout \g)
                        \m :start
                        \r :red
                        \b :blue
@@ -41,7 +43,7 @@
                        \j #(swap! g cdec)
                        \k #(swap! g cinc)
                        \q nil}
-               :blue {:msg #(cout "BLUE")
+               :blue {:msg #(cout \b)
                       \m :start
                       \r :red
                       \g :green
