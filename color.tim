@@ -12,8 +12,9 @@
 (let [r (atom 0)
       g (atom 0)
       b (atom 0)
-      cinc #(max (min (inc %) 5) 0)
-      cdec #(max (min (dec %) 5) 0)
+      clamp #(max (min % 5) 0)
+      cinc #(clamp (inc %))
+      cdec #(clamp (dec %))
       cout #(str "r" @r " g" @g " b" @b " ("
                  (cterm-rgb @r @g @b)
                  ") (j/k/r/g/b/m/q) " % ": ")]
