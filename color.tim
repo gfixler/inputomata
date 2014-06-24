@@ -12,12 +12,14 @@
 (let [r (atom 0)
       g (atom 0)
       b (atom 0)
+      f (atom true)
       clamp #(max (min % 5) 0)
       cinc #(clamp (inc %))
       cdec #(clamp (dec %))
       cout #(str "r" @r " g" @g " b" @b " ("
                  (cterm-rgb @r @g @b)
-                 ") (j/k/r/g/b/m/q) " % ": ")]
+                 ") (j/k/f/r/g/b/m/q) " % " ("
+                 (if @f "fg" "bg") "): ")]
   (inputomata {:start {:msg "Choose component (r/g/b/q): "
                        \r :red
                        \g :green
@@ -27,6 +29,7 @@
                      \m :start
                      \g :green
                      \b :blue
+                     \f #(swap! f not)
                      \j #(swap! r cdec)
                      \k #(swap! r cinc)
                      \q nil}
@@ -34,6 +37,7 @@
                        \m :start
                        \r :red
                        \b :blue
+                       \f #(swap! f not)
                        \j #(swap! g cdec)
                        \k #(swap! g cinc)
                        \q nil}
@@ -41,6 +45,7 @@
                       \m :start
                       \r :red
                       \g :green
+                      \f #(swap! f not)
                       \j #(swap! b cdec)
                       \k #(swap! b cinc)
                       \q nil}}))
