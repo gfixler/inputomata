@@ -18,9 +18,9 @@
       cdec #(clamp (dec %))
       cout #(str "r" @r " g" @g " b" @b " ("
                  (cterm-rgb @r @g @b)
-                 ") (j/k/f/r/g/b/m/q) " % " ("
+                 ") [j/k/f/r/g/b/m/q] " % " ("
                  (if @f "fg" "bg") "): ")]
-  (inputomata {:start {:msg "Choose component (r/g/b/q): "
+  (inputomata {:start {:msg "Choose component [r/g/b/q]: "
                        \r :red
                        \g :green
                        \b :blue
