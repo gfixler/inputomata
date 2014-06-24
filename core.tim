@@ -6,15 +6,15 @@
                               (if (string? msg)
                                 (print "\r" msg)
                                 (print "\r" (msg))))
-                  (let [k (nr2char (#*getchar))]
-                    (if (contains? state k)
-                      (let (v (state k))
-                        (if (nil? v)
+                  (let [state-key (nr2char (#*getchar))]
+                    (if (contains? state state-key)
+                      (let (state-val (state state-key))
+                        (if (nil? state-val)
                           "done"
-                          (if (keyword? v)
-                            (recur v)
+                          (if (keyword? state-val)
+                            (recur state-val)
                             (do
-                              (v)
+                              (state-val)
                               (recur cur-state)))))
                       (recur cur-state))))
                 (throw (str "no '" cur-state "' state")))))
