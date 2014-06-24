@@ -1,3 +1,5 @@
+(use 'inputomata.core)
+
 (defn cterm-rgb [r g b]
   "Pass rgb values, each in range 0-5, inclusive.
   Returns 8-bit cterm color value in range 16-231, inclusive."
