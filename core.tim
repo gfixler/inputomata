@@ -19,35 +19,3 @@
                       (recur cur-state))))
                 (throw (str "no '" cur-state "' state")))))
 
-(let [r (atom 0)
-      g (atom 0)
-      b (atom 0)
-      cinc #(max (min (inc %) 5) 0)
-      cdec #(max (min (dec %) 5) 0)]
-  (inputomata {:start {:msg "Choose component (r/g/b/q): "
-                       \r :red
-                       \g :green
-                       \b :blue
-                       \q nil}
-               :red {:msg #(str @r @g @b " (j/k/r/g/b/m/q) RED: ")
-                     \m :start
-                     \g :green
-                     \b :blue
-                     \j #(swap! r cdec)
-                     \k #(swap! r cinc)
-                     \q nil}
-               :green {:msg #(str @r @g @b " (j/k/r/g/b/m/q) GREEN: ")
-                       \m :start
-                       \r :red
-                       \b :blue
-                       \j #(swap! g cdec)
-                       \k #(swap! g cinc)
-                       \q nil}
-               :blue {:msg #(str @r @g @b " (j/k/r/g/b/m/q) BLUE: ")
-                      \m :start
-                      \r :red
-                      \g :green
-                      \j #(swap! b cdec)
-                      \k #(swap! b cinc)
-                      \q nil}}))
-

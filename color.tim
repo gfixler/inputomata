@@ -9,6 +9,38 @@
   Returns cterm grayscale value in range 232-255, inclusive."
   (+ 232 (max 0 (min 23 v))))
 
-(cterm-gray 21)
-(cterm-rgb 5 5 5)
+(let [r (atom 0)
+      g (atom 0)
+      b (atom 0)
+      cinc #(max (min (inc %) 5) 0)
+      cdec #(max (min (dec %) 5) 0)
+      cout #(str "r" @r " g" @g " b" @b " ("
+                 (cterm-rgb @r @g @b)
+                 ") (j/k/r/g/b/m/q) " % ": ")]
+  (inputomata {:start {:msg "Choose component (r/g/b/q): "
+                       \r :red
+                       \g :green
+                       \b :blue
+                       \q nil}
+               :red {:msg #(cout "RED")
+                     \m :start
+                     \g :green
+                     \b :blue
+                     \j #(swap! r cdec)
+                     \k #(swap! r cinc)
+                     \q nil}
+               :green {:msg #(cout "GREEN")
+                       \m :start
+                       \r :red
+                       \b :blue
+                       \j #(swap! g cdec)
+                       \k #(swap! g cinc)
+                       \q nil}
+               :blue {:msg #(cout "BLUE")
+                      \m :start
+                      \r :red
+                      \g :green
+                      \j #(swap! b cdec)
+                      \k #(swap! b cinc)
+                      \q nil}}))
 
