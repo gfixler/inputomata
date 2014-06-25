@@ -35,6 +35,13 @@
    (let [id (#*synID (#*line ".") (#*col ".") 1)]
      (#*synIDattr (if base (#*synIDtrans id) id) "name"))))
 
+(defn hi
+  ([group col] (hi group col false))
+  ([group col bg]
+   "Pass highlight group name, cterm color in range 16-231, inclusive,
+   and true if you want to set the background color (default: foreground)."
+   (execute (str "hi " group " cterm" (if bg "bg" "fg") "=" col))))
+
 (let [r (atom 0)
       g (atom 0)
       b (atom 0)
