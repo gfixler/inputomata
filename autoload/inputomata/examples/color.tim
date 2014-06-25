@@ -24,7 +24,7 @@
                  (if (= % \g) " G" " g") @g
                  (if (= % \b) " B" " b") @b
                  " (" (cterm-rgb @r @g @b) "): ")]
-  (inputomata {:start {:msg "Choose component [r/g/b/q]: "
+  (fsm {:start {:msg "Choose component [r/g/b/q]: "
                        \r :red
                        \g :green
                        \b :blue

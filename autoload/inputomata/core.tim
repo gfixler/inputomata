@@ -1,6 +1,6 @@
 (ns inputomata.core)
 
-(defn inputomata [states]
+(defn fsm [states]
   (loop [cur-state :start]
         (if-let [state (states cur-state)]
                 (do (when-let [msg (state :msg)]
