@@ -1,9 +1,11 @@
 (use 'inputomata.core)
 
+(defn clamp [lo hi v] (max lo (min hi v)))
+
 (defn cterm-rgb [r g b]
   "Pass rgb values, each in range 0-5, inclusive.
   Returns 8-bit cterm color value in range 16-231, inclusive."
-  (let [[r g b] (map #(max 0 (min 5 %)) [r g b])]
+  (let [[r g b] (map #(clamp 0 5 %) [r g b])]
     (max 16 (min 231 (+ 16 (* r 36) (* g 6) b)))))
 
 (defn cterm-gray [v]
