@@ -19,5 +19,7 @@
                               (state-val)
                               (recur cur-state)))))
                       (recur cur-state))))
-                (throw (str "no '" cur-state "' state")))))
+                (if (contains? states cur-state)
+                  "done"
+                  (throw (str "no '" cur-state "' state"))))))
 
