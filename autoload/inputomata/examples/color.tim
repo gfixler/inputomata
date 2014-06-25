@@ -4,7 +4,7 @@
 (def rgb-clamp (partial clamp 16 231))
 (def gray-clamp (partial clamp 232 255))
 
-(defn cterm-rgb [r g b]
+(defn rgb-join [r g b]
   "Pass rgb values, each in range 0-5, inclusive.
   Returns 8-bit cterm color value in range 16-231, inclusive."
   (let [[r g b] (map #(clamp 0 5 %) [r g b])]
@@ -27,7 +27,7 @@
                  (if (= % \r) "R" "r") @r
                  (if (= % \g) " G" " g") @g
                  (if (= % \b) " B" " b") @b
-                 " (" (cterm-rgb @r @g @b) "): ")]
+                 " (" (rgb-join @r @g @b) "): ")]
   (fsm {:start {:msg "Choose component [r/g/b/q]: "
                 \r :red
                 \g :green
