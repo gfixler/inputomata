@@ -27,6 +27,14 @@
   Returns cterm grayscale value in range 232-255, inclusive."
   (+ 232 (max 0 (min 23 v))))
 
+(defn hiUnderCursor
+  ([] (hiUnderCursor false))
+  ([base]
+   "Returns highlight group under cursor.
+   Pass true to get the root linked group."
+   (let [id (#*synID (#*line ".") (#*col ".") 1)]
+     (#*synIDattr (if base (#*synIDtrans id) id) "name"))))
+
 (let [r (atom 0)
       g (atom 0)
       b (atom 0)
