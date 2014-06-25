@@ -49,6 +49,7 @@
       cinc #(component-clamp (inc %))
       cdec #(component-clamp (dec %))
       ccol #(rgb-join @r @g @b)
+      update #(hi "Function" (ccol) (execute "redraw!"))
       cout #(str "(j/k/f/r/g/b/m/q) ("
                  (if @f "fg" "bg") ") "
                  (if (= % \r) "R" "r") @r
@@ -65,23 +66,23 @@
               \g :green
               \b :blue
               \f #(swap! f not)
-              \j #(swap! r cdec)
-              \k #(swap! r cinc)
+              \j #(do (swap! r cdec) (update))
+              \k #(do (swap! r cinc) (update))
               \q nil}
         :green {:msg #(cout \g)
                 \m :start
                 \r :red
                 \b :blue
                 \f #(swap! f not)
-                \j #(swap! g cdec)
-                \k #(swap! g cinc)
+                \j #(do (swap! g cdec) (update))
+                \k #(do (swap! g cinc) (update))
                 \q nil}
         :blue {:msg #(cout \b)
                \m :start
                \r :red
                \g :green
                \f #(swap! f not)
-               \j #(swap! b cdec)
-               \k #(swap! b cinc)
+               \j #(do (swap! b cdec) (update))
+               \k #(do (swap! b cinc) (update))
                \q nil}}))
 
