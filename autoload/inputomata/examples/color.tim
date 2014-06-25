@@ -10,6 +10,17 @@
   (let [[r g b] (map #(clamp 0 5 %) [r g b])]
     (rgb-clamp (+ 16 (* r 36) (* g 6) b))))
 
+(defn rgb-split [rgb]
+  "Pass 8-bit cterm color value in range 16-231, inclusive.
+  Returns vector of rgb values, each in range 0-5, inclusive."
+  (if (or (< rgb 16) (> rgb 231))
+    (throw (str rgb " out of range!")))
+  (let [rgb (- rgb 16)
+        r (/ rgb 36)
+        g (/ (- rgb (* r 36)) 6)
+        b (- rgb (* r 36) (* g 6))]
+    [r g b]))
+
 (defn cterm-gray [v]
   "Pass gray value in range 0-24, inclusive.
   Returns cterm grayscale value in range 232-255, inclusive."
