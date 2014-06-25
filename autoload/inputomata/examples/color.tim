@@ -1,6 +1,7 @@
 (use 'inputomata.core)
 
 (defn clamp [lo hi v] (max lo (min hi v)))
+(def component-clamp (partial clamp 0 5))
 (def rgb-clamp (partial clamp 16 231))
 (def gray-clamp (partial clamp 232 255))
 
@@ -30,8 +31,8 @@
       g (atom 0)
       b (atom 0)
       f (atom true)
-      cinc #(clamp 0 5 (inc %))
-      cdec #(clamp 0 5 (dec %))
+      cinc #(component-clamp (inc %))
+      cdec #(component-clamp (dec %))
       cout #(str "(j/k/f/r/g/b/m/q) ("
                  (if @f "fg" "bg") ") "
                  (if (= % \r) "R" "r") @r
