@@ -30,9 +30,8 @@
       g (atom 0)
       b (atom 0)
       f (atom true)
-      clamp #(max (min % 5) 0)
-      cinc #(clamp (inc %))
-      cdec #(clamp (dec %))
+      cinc #(clamp 0 5 (inc %))
+      cdec #(clamp 0 5 (dec %))
       cout #(str "(j/k/f/r/g/b/m/q) ("
                  (if @f "fg" "bg") ") "
                  (if (= % \r) "R" "r") @r
