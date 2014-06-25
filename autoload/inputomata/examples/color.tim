@@ -48,12 +48,13 @@
       f (atom true)
       cinc #(component-clamp (inc %))
       cdec #(component-clamp (dec %))
+      ccol #(rgb-join @r @g @b)
       cout #(str "(j/k/f/r/g/b/m/q) ("
                  (if @f "fg" "bg") ") "
                  (if (= % \r) "R" "r") @r
                  (if (= % \g) " G" " g") @g
                  (if (= % \b) " B" " b") @b
-                 " (" (rgb-join @r @g @b) "): ")]
+                 " (" (ccol) "): ")]
   (fsm {:start {:msg "Choose component [r/g/b/q]: "
                 \r :red
                 \g :green
