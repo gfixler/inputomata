@@ -3,3 +3,5 @@ if exists("g:loaded_inputomata") || v:version < 700 || &cp
 endif
 let g:loaded_inputomata = 1
 
+command! InputomataShiny call inputomata#examples#color#shiny()
+
