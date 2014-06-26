@@ -1,4 +1,5 @@
-(use 'inputomata.core)
+(ns inputomata.examples.color
+    (:use inputomata.core))
 
 (defn clamp [lo hi v] (max lo (min hi v)))
 (def component-clamp (partial clamp 0 5))
