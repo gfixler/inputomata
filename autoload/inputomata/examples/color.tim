@@ -1,56 +1,90 @@
-(use 'inputomata.core)
+(ns inputomata.examples.color
+    (:use inputomata.core))
 
-(defn cterm-rgb [r g b]
+(defn clamp [lo hi v] (max lo (min hi v)))
+(def component-clamp (partial clamp 0 5))
+(def rgb-clamp (partial clamp 16 231))
+(def gray-clamp (partial clamp 232 255))
+
+(defn rgb-join [r g b]
   "Pass rgb values, each in range 0-5, inclusive.
   Returns 8-bit cterm color value in range 16-231, inclusive."
-  (let [[r g b] (map #(max 0 (min 5 %)) [r g b])]
-    (max 16 (min 231 (+ 16 (* r 36) (* g 6) b)))))
+  (let [[r g b] (map #(clamp 0 5 %) [r g b])]
+    (rgb-clamp (+ 16 (* r 36) (* g 6) b))))
+
+(defn rgb-split [rgb]
+  "Pass 8-bit cterm color value in range 16-231, inclusive.
+  Returns vector of rgb values, each in range 0-5, inclusive."
+  (if (or (< rgb 16) (> rgb 231))
+    (throw (str rgb " out of range!")))
+  (let [rgb (- rgb 16)
+        r (/ rgb 36)
+        g (/ (- rgb (* r 36)) 6)
+        b (- rgb (* r 36) (* g 6))]
+    [r g b]))
 
 (defn cterm-gray [v]
   "Pass gray value in range 0-24, inclusive.
   Returns cterm grayscale value in range 232-255, inclusive."
   (+ 232 (max 0 (min 23 v))))
 
-(let [r (atom 0)
-      g (atom 0)
-      b (atom 0)
-      f (atom true)
-      clamp #(max (min % 5) 0)
-      cinc #(clamp (inc %))
-      cdec #(clamp (dec %))
-      cout #(str "(j/k/f/r/g/b/m/q) ("
-                 (if @f "fg" "bg") ") "
-                 (if (= % \r) "R" "r") @r
-                 (if (= % \g) " G" " g") @g
-                 (if (= % \b) " B" " b") @b
-                 " (" (cterm-rgb @r @g @b) "): ")]
-  (fsm {:start {:msg "Choose component [r/g/b/q]: "
-                       \r :red
-                       \g :green
-                       \b :blue
-                       \q nil}
-               :red {:msg #(cout \r)
-                     \m :start
-                     \g :green
-                     \b :blue
-                     \f #(swap! f not)
-                     \j #(swap! r cdec)
-                     \k #(swap! r cinc)
-                     \q nil}
-               :green {:msg #(cout \g)
-                       \m :start
-                       \r :red
-                       \b :blue
-                       \f #(swap! f not)
-                       \j #(swap! g cdec)
-                       \k #(swap! g cinc)
-                       \q nil}
-               :blue {:msg #(cout \b)
-                      \m :start
-                      \r :red
-                      \g :green
-                      \f #(swap! f not)
-                      \j #(swap! b cdec)
-                      \k #(swap! b cinc)
-                      \q nil}}))
+(defn hiUnderCursor
+  ([] (hiUnderCursor false))
+  ([base]
+   "Returns highlight group under cursor.
+   Pass true to get the root linked group."
+   (let [id (#*synID (#*line ".") (#*col ".") 1)]
+     (#*synIDattr (if base (#*synIDtrans id) id) "name"))))
+
+(defn hi
+  ([group col] (hi group col false))
+  ([group col bg]
+   "Pass highlight group name, cterm color in range 16-231, inclusive,
+   and true if you want to set the background color (default: foreground)."
+   (execute (str "hi " group " cterm" (if bg "bg" "fg") "=" col))))
+
+(defn shiny []
+  (let [r (atom 0)
+        g (atom 0)
+        b (atom 0)
+        f (atom true)
+        cinc #(component-clamp (inc %))
+        cdec #(component-clamp (dec %))
+        ccol #(rgb-join @r @g @b)
+        update #(hi "Function" (ccol) (execute "redraw!"))
+        cout #(str "(j/k/f/r/g/b/m/q) ("
+                   (if @f "fg" "bg") ") "
+                   (if (= % \r) "R" "r") @r
+                   (if (= % \g) " G" " g") @g
+                   (if (= % \b) " B" " b") @b
+                   " (" (ccol) "): ")]
+    (fsm {:start {:msg "Choose component [r/g/b/q]: "
+                  \r :red
+                  \g :green
+                  \b :blue
+                  \q nil}
+          :red {:msg #(cout \r)
+                \m :start
+                \g :green
+                \b :blue
+                \f #(swap! f not)
+                \j #(do (swap! r cdec) (update))
+                \k #(do (swap! r cinc) (update))
+                \q nil}
+          :green {:msg #(cout \g)
+                  \m :start
+                  \r :red
+                  \b :blue
+                  \f #(swap! f not)
+                  \j #(do (swap! g cdec) (update))
+                  \k #(do (swap! g cinc) (update))
+                  \q nil}
+          :blue {:msg #(cout \b)
+                 \m :start
+                 \r :red
+                 \g :green
+                 \f #(swap! f not)
+                 \j #(do (swap! b cdec) (update))
+                 \k #(do (swap! b cinc) (update))
+                 \q nil}})))
 
