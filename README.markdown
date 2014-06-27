@@ -1,18 +1,23 @@
 ## Vim FSMs and You
 
-##### In the Beginning Was the getchar()
+#### In the Beginning Was the getchar()
 
-Inputomata.tim provides a general-purpose, event-driven finite-state machine
+Inputomata provides a general-purpose, event-driven finite-state machine
 triggered by user key presses, with states defined in TimL maps.
 
 ### What?
 
 See: http://en.wikipedia.org/wiki/Finite-state_machine
 
-Put simply, you define one or more states of a finite-state machine (FSM) in a
-[Clojure-like] TimL map, providing each with one or more triggers. Triggers are
-single characters that you can press on the keyboard while in the FSM, which
-can either transfer you to another state, run a function, or exit the FSM.
+Put less simply, you define one or more states of a finite-state machine (FSM)
+in a [Clojure-like] TimL map, providing each with one or more triggers.
+Triggers are single characters that you can press on the keyboard while in an
+FSM, which can either transition you to another state, run a function, or exit
+the FSM.
+
+### *What?*
+
+It lets you quickly build interactive scripts that react to keypresses.
 
 ### Why is it called "Inputomata"?
 
@@ -52,7 +57,8 @@ sentience, free time, and maybe free will.
 
 ### Vim/VimL/TimL interop
 
-* Your FSMs can interact with Vim/VimL/TimL in the same way that TimL can.
+* Your FSMs can interact with Vim/VimL/TimL in the same way that TimL can, i.e.
+  completely.
 * Input from the user - on a key-by-key basis - can trigger state transfer, or
   can call any arbitrary TimL function (currently without state change).
 * Inputomata.tim uses Vim's getchar in a loop, trapping the user until they
@@ -60,12 +66,13 @@ sentience, free time, and maybe free will.
   they realize their computer doesn't own them, and they can just get up and
   leave whenever they want.
 * Because the entirety of the interaction takes place in a TimL loop/recur, no
-  changes need to be made to Vim, e.g. no mappings are set/changed.
+  changes need to be made to Vim, e.g. no mappings are set/changed. This is all
+  purely functional, for some impure value of "purely."
 
 ### Getting started
 
 This plugin is set up in the standard Vim fashion. Masochists can install it
-manually, others may use Pathogen, Vundle, NeoBundle, etc...
+manually; others may use Pathogen, Vundle, NeoBundle, etc...
 
 I recommend installing [pathogen.vim][], then copying and pasting this (you
 know where):
@@ -92,7 +99,8 @@ least have a :start state; it is an error otherwise.
 The following FSM allows jumping to :a or :b states on start, then between :a
 and :b as often as you like, with the ability to quit out at any point. The
 messages let you know where you are at all times. Though optional, they're a
-good idea. It gets disorienting and lonely to state-hop with no feedback.
+good idea. It gets disorienting and lonely to hop from state to state without
+receiving any feedback (a sad variant of the traveling salesman problem).
 
     (fsm {:start {:msg "Press 'a' or 'b', or 'q' to quit"
                   \a :a
