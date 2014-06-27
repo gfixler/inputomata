@@ -1,18 +1,20 @@
 (ns inputomata.core)
 
+(defn status [msg] (execute "redraw!") (print msg))
+
 (defn fsm [states]
   (loop [cur-state :start]
         (if-let [state (states cur-state)]
-                (do (when-let [msg (state :msg)]
-                              (print "\r" (repeat " " (- (#*winwidth ".") 1)))
-                              (if (string? msg)
-                                (print "\r" msg)
-                                (print "\r" (msg))))
+                (do
+                  (when-let [msg (state :msg)]
+                            (if (string? msg)
+                              (status msg)
+                              (status (msg))))
                   (let [state-key (nr2char (#*getchar))]
                     (if (contains? state state-key)
                       (let (state-val (state state-key))
                         (if (nil? state-val)
-                          "done"
+                          (status "done")
                           (if (keyword? state-val)
                             (recur state-val)
                             (do
@@ -20,6 +22,6 @@
                               (recur cur-state)))))
                       (recur cur-state))))
                 (if (contains? states cur-state)
-                  "done"
+                  (status "done")
                   (throw (str "no '" cur-state "' state"))))))
 
